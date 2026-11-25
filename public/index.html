@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Which Gingerbread Are You?</title>
-  <meta name="description" content="Christmas mixer personality quiz: find your gingerbread twin and your team." />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍪</text></svg>" />
+  <title>What Christmas Gift Are You?</title>
+  <meta name="description" content="Christmas mixer personality quiz: find out which gift you bring to the group, and meet your team." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎁</text></svg>" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet" />
@@ -86,8 +86,8 @@
     .center { text-align: center; }
     .muted { color: var(--muted); }
 
-    .hero-cookies { display: flex; justify-content: center; gap: 4px; margin: 6px 0 4px; }
-    .hero-cookies svg { width: 62px; height: auto; animation: bob 2.6s ease-in-out infinite; }
+    .hero-cookies { display: flex; justify-content: center; gap: 6px; margin: 6px 0 8px; }
+    .hero-cookies svg { width: 78px; height: auto; animation: bob 2.6s ease-in-out infinite; }
     .hero-cookies svg:nth-child(2) { animation-delay: .3s; }
     .hero-cookies svg:nth-child(3) { animation-delay: .6s; }
     .hero-cookies svg:nth-child(4) { animation-delay: .9s; }
@@ -142,15 +142,21 @@
     .answer.chosen { border-color: var(--red); background: #fdeaea; }
 
     /* ---------- loading ---------- */
-    .oven { width: 120px; margin: 10px auto 0; animation: wobble .8s ease-in-out infinite; }
-    @keyframes wobble { 50% { transform: rotate(6deg) scale(1.05); } }
+    .oven { width: 130px; margin: 10px auto 0; animation: wobble .6s ease-in-out infinite; }
+    @keyframes wobble { 25% { transform: rotate(-7deg); } 75% { transform: rotate(7deg) scale(1.04); } }
 
     /* ---------- result ---------- */
     .result-top { text-align: center; }
     .eyebrow { text-transform: uppercase; letter-spacing: .14em; font-weight: 800; font-size: .8rem; color: var(--muted); }
-    .result-cookie { width: 170px; margin: 6px auto 0; filter: drop-shadow(0 10px 12px rgba(0,0,0,.18)); animation: bob 2.6s ease-in-out infinite; }
-    .result-name { color: var(--accent); margin-top: 6px; }
-    .tagline { font-weight: 800; font-style: italic; margin: 6px 0 0; }
+    .result-cookie { width: 180px; margin: 6px auto 0; filter: drop-shadow(0 10px 12px rgba(0,0,0,.18)); animation: pop-in .6s cubic-bezier(.2,1.6,.4,1) both, bob 2.6s ease-in-out .6s infinite; }
+    @keyframes pop-in { from { transform: scale(.4) rotate(-10deg); opacity: 0; } }
+    .result-name { color: var(--accent); margin-top: 6px; font-size: clamp(2.2rem, 9vw, 2.8rem); }
+    .result-title { font-weight: 800; text-transform: uppercase; letter-spacing: .12em; font-size: .9rem; color: var(--muted); margin-top: 2px; }
+    .tagline { font-weight: 800; font-style: italic; font-size: 1.1rem; margin: 12px 0 0; }
+    .info { display: grid; gap: 10px; margin: 4px 0 0; }
+    .info-row { background: #fff; border-radius: 16px; padding: 12px 14px; border: 2px solid #ead6bb; }
+    .info-row .k { font-weight: 800; color: var(--accent); font-size: .85rem; text-transform: uppercase; letter-spacing: .08em; }
+    .info-row .v { margin-top: 2px; font-weight: 600; }
     .traits { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 16px 0; }
     .trait { padding: 6px 12px; border-radius: 99px; font-weight: 800; font-size: .9rem; color: #fff; background: var(--accent); }
     .team-box {
@@ -174,7 +180,7 @@
     <!-- Intro -->
     <section id="intro" class="screen active">
       <div class="hero-cookies" id="heroCookies" aria-hidden="true"></div>
-      <h1 id="title">Which Gingerbread Are You?</h1>
+      <h1 id="title">What Christmas Gift Are You?</h1>
       <p class="center muted" id="subtitle"></p>
       <form id="startForm" novalidate>
         <label for="name">What's your name?</label>
@@ -198,8 +204,8 @@
     <!-- Loading -->
     <section id="loading" class="screen center">
       <div class="oven" id="ovenCookie" aria-hidden="true"></div>
-      <h2 style="margin-top:12px">Baking your result…</h2>
-      <p class="muted">Adding the final sprinkles ✨</p>
+      <h2 style="margin-top:12px">Wrapping your gift…</h2>
+      <p class="muted">Tying the bow ✨</p>
     </section>
 
     <!-- Result -->
@@ -208,14 +214,18 @@
         <div class="eyebrow" id="resultHello"></div>
         <div class="result-cookie" id="resultCookie"></div>
         <h2 class="result-name" id="resultName"></h2>
+        <div class="result-title" id="resultTitle"></div>
         <p class="tagline" id="resultTagline"></p>
       </div>
       <div class="traits" id="resultTraits"></div>
-      <p id="resultDesc"></p>
+      <div class="info">
+        <div class="info-row"><div class="k">🎁 Your gift</div><div class="v" id="resultGift"></div></div>
+        <div class="info-row"><div class="k">✨ Ideal vibe</div><div class="v" id="resultVibe"></div></div>
+      </div>
       <div class="team-box">
         <div class="eyebrow">You're on</div>
         <div class="team" id="resultTeam"></div>
-        <div class="muted">Find your fellow cookies and say hi! 👋</div>
+        <div class="muted">Find your teammates and say hi! 👋</div>
       </div>
       <p class="save-note" id="saveNote" hidden></p>
       <p class="center"><button class="link" id="retakeBtn" type="button">Not you? Take the quiz again</button></p>
@@ -225,10 +235,10 @@
   <footer>Merry Christmas from the mixer team 🎁</footer>
 
   <script src="quiz-config.js"></script>
-  <script src="gingerbread.js"></script>
+  <script src="gifts.js"></script>
   <script>
     const QUIZ = window.QUIZ;
-    const STORAGE_KEY = "gingerbread-quiz-result";
+    const STORAGE_KEY = "gift-quiz-result";
     const byId = (id) => document.getElementById(id);
     const personalityById = Object.fromEntries(QUIZ.personalities.map((p) => [p.id, p]));
 
@@ -272,8 +282,8 @@
     // ---------- intro ----------
     byId("title").textContent = QUIZ.title;
     byId("subtitle").textContent = QUIZ.subtitle;
-    byId("heroCookies").innerHTML = QUIZ.personalities.map((p) => drawGingerbread(p.color, p.accessory)).join("");
-    byId("ovenCookie").innerHTML = drawGingerbread("#c8283a", "none");
+    byId("heroCookies").innerHTML = QUIZ.personalities.map((p) => drawGift(p.icon, p.color)).join("");
+    byId("ovenCookie").innerHTML = drawGift("present", "#c8283a");
 
     byId("startForm").addEventListener("submit", (e) => {
       e.preventDefault();
@@ -390,10 +400,12 @@
       if (!p) return show("intro");
       document.documentElement.style.setProperty("--accent", p.color);
       byId("resultHello").textContent = `${name}, you are…`;
-      byId("resultCookie").innerHTML = drawGingerbread(p.color, p.accessory);
+      byId("resultCookie").innerHTML = drawGift(p.icon, p.color);
       byId("resultName").textContent = p.name;
-      byId("resultTagline").textContent = p.tagline;
-      byId("resultDesc").textContent = p.description;
+      byId("resultTitle").textContent = p.title || "";
+      byId("resultTagline").textContent = p.reveal || "";
+      byId("resultGift").textContent = p.gift || "";
+      byId("resultVibe").textContent = p.vibe || "";
       byId("resultTeam").textContent = p.team;
       const traits = byId("resultTraits");
       traits.innerHTML = "";

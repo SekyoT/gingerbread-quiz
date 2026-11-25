@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex" />
-  <title>Organiser Dashboard · Gingerbread Quiz</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍪</text></svg>" />
+  <title>Organiser Dashboard · Christmas Gift Quiz</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎁</text></svg>" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet" />
@@ -37,7 +37,7 @@
     .teams { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
     .team { background: var(--cream); border-radius: 20px; overflow: hidden; box-shadow: 0 10px 24px rgba(0,0,0,.25); display: flex; flex-direction: column; }
     .team-head { padding: 14px 16px 12px; color: #fff; display: flex; align-items: center; gap: 10px; }
-    .team-head svg { width: 44px; flex: none; }
+    .team-head .icon { width: 50px; height: 50px; flex: none; background: #fff8ec; border-radius: 50%; padding: 5px; }
     .team-head .name { font-weight: 800; line-height: 1.2; }
     .team-head .count { font-size: 2rem; font-weight: 800; margin-left: auto; }
     .bar { height: 6px; background: #f0e2cf; }
@@ -81,11 +81,11 @@
   </div>
 
   <script src="quiz-config.js"></script>
-  <script src="gingerbread.js"></script>
+  <script src="gifts.js"></script>
   <script>
     const QUIZ = window.QUIZ;
     const byId = (id) => document.getElementById(id);
-    const KEY_STORE = "gingerbread-admin-key";
+    const KEY_STORE = "gift-quiz-admin-key";
     let key = sessionStorage.getItem(KEY_STORE) || "";
     let entries = [];
     let timer = null;
@@ -124,21 +124,21 @@
       const known = new Set(QUIZ.personalities.map((p) => p.id));
       const groups = QUIZ.personalities.map((p) => ({ ...p, members: entries.filter((e) => e.personality === p.id) }));
       const orphans = entries.filter((e) => !known.has(e.personality));
-      if (orphans.length) groups.push({ id: "_other", name: "Old / renamed personality", team: "Other", color: "#6b7280", accessory: "none", members: orphans });
+      if (orphans.length) groups.push({ id: "_other", name: "Old / renamed personality", team: "Other", color: "#6b7280", icon: "present", members: orphans });
 
       for (const g of groups) {
         const card = document.createElement("div");
         card.className = "team";
         card.innerHTML = `
           <div class="team-head" style="background:${g.color}">
-            ${drawGingerbread("#fff8ec", g.accessory)}
+            <div class="icon">${drawGift(g.icon, g.color)}</div>
             <div><div class="name"></div><div class="tname" style="opacity:.85;font-size:.9rem"></div></div>
             <div class="count"></div>
           </div>
           <div class="bar"><div style="background:${g.color};width:${(g.members.length / max) * 100}%"></div></div>
           <ul></ul>`;
         card.querySelector(".name").textContent = g.team;
-        card.querySelector(".tname").textContent = g.name;
+        card.querySelector(".tname").textContent = g.title || g.name;
         card.querySelector(".count").textContent = g.members.length;
         const ul = card.querySelector("ul");
         if (!g.members.length) {
@@ -181,7 +181,7 @@
       const blob = new Blob([rows.map((r) => r.map(esc).join(",")).join("\n")], { type: "text/csv" });
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
-      a.download = "gingerbread-teams.csv";
+      a.download = "christmas-gift-teams.csv";
       a.click();
       URL.revokeObjectURL(a.href);
     }
