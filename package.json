@@ -1,0 +1,12 @@
+{
+  "name": "gingerbread-personality-quiz",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Christmas social mixer personality quiz that sorts people into teams",
+  "scripts": {
+    "dev": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
