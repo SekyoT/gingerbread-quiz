@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex" />
+  <title>Organiser Dashboard · Gingerbread Quiz</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍪</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet" />
+  <style>
+    :root { --pine: #0e3b2c; --cream: #fff8ec; --ink: #3a2212; --muted: #7a5a43; --red: #c8283a; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: "Nunito", system-ui, sans-serif; color: var(--ink);
+      background: linear-gradient(180deg, #15553f, var(--pine)); background-attachment: fixed; min-height: 100vh;
+      padding: 24px 16px 48px;
+    }
+    .wrap { max-width: 1200px; margin: 0 auto; }
+    h1 { font-family: "Mountains of Christmas", cursive; color: #fff; font-size: 2.6rem; margin: 0 0 4px; }
+    .sub { color: #cfe8dc; margin: 0 0 20px; }
+    .panel { background: var(--cream); border-radius: 20px; padding: 20px; box-shadow: 0 12px 30px rgba(0,0,0,.25); }
+    .login { max-width: 380px; margin: 60px auto; text-align: center; }
+    input { width: 100%; font: inherit; font-size: 1.05rem; padding: 12px 14px; border-radius: 12px; border: 2px solid #e4cdb0; }
+    button {
+      font: inherit; font-weight: 800; border: none; border-radius: 12px; cursor: pointer;
+      padding: 10px 16px; background: var(--red); color: #fff;
+    }
+    button.ghost { background: #fff; color: var(--ink); border: 2px solid #e4cdb0; }
+    button.danger { background: #fff; color: var(--red); border: 2px solid var(--red); }
+    .error { color: var(--red); font-weight: 600; min-height: 1.3em; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 16px; }
+    .toolbar .spacer { flex: 1; }
+    .stat { color: #fff; font-weight: 800; font-size: 1.1rem; }
+    .auto { color: #cfe8dc; display: flex; align-items: center; gap: 6px; font-weight: 600; }
+    .teams { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+    .team { background: var(--cream); border-radius: 20px; overflow: hidden; box-shadow: 0 10px 24px rgba(0,0,0,.25); display: flex; flex-direction: column; }
+    .team-head { padding: 14px 16px 12px; color: #fff; display: flex; align-items: center; gap: 10px; }
+    .team-head svg { width: 44px; flex: none; }
+    .team-head .name { font-weight: 800; line-height: 1.2; }
+    .team-head .count { font-size: 2rem; font-weight: 800; margin-left: auto; }
+    .bar { height: 6px; background: #f0e2cf; }
+    .bar > div { height: 100%; }
+    ul { list-style: none; margin: 0; padding: 8px 10px 12px; max-height: 420px; overflow-y: auto; }
+    li { display: flex; align-items: center; gap: 6px; padding: 7px 8px; border-radius: 10px; }
+    li:nth-child(odd) { background: #f7ecdc; }
+    li .n { flex: 1; font-weight: 600; word-break: break-word; }
+    li .t { font-size: .8rem; color: var(--muted); }
+    li button { padding: 2px 8px; background: transparent; color: var(--muted); font-size: 1rem; }
+    li button:hover { color: var(--red); }
+    .empty { color: var(--muted); padding: 12px 16px; font-style: italic; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>🎄 Organiser Dashboard</h1>
+    <p class="sub">See who's on which team as people finish the quiz.</p>
+
+    <div id="loginView" class="panel login">
+      <h2 style="margin-top:0">Organiser password</h2>
+      <form id="loginForm">
+        <input id="pw" type="password" placeholder="Password" autocomplete="current-password" />
+        <p class="error" id="loginError"></p>
+        <button type="submit" style="width:100%">Open dashboard</button>
+      </form>
+    </div>
+
+    <div id="dashView" hidden>
+      <div class="toolbar">
+        <span class="stat" id="total"></span>
+        <span class="spacer"></span>
+        <label class="auto"><input type="checkbox" id="autoRefresh" checked style="width:auto" /> Auto-refresh</label>
+        <button class="ghost" id="refreshBtn">↻ Refresh</button>
+        <button class="ghost" id="csvBtn">⬇ Download CSV</button>
+        <button class="danger" id="resetBtn">Clear all results</button>
+      </div>
+      <p class="error" id="dashError" style="color:#ffd1d6"></p>
+      <div class="teams" id="teams"></div>
+    </div>
+  </div>
+
+  <script src="quiz-config.js"></script>
+  <script src="gingerbread.js"></script>
+  <script>
+    const QUIZ = window.QUIZ;
+    const byId = (id) => document.getElementById(id);
+    const KEY_STORE = "gingerbread-admin-key";
+    let key = sessionStorage.getItem(KEY_STORE) || "";
+    let entries = [];
+    let timer = null;
+
+    async function api(method, query = "") {
+      const res = await fetch("/api/results" + query, { method, headers: { "x-admin-key": key } });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        const err = new Error(data.error || `Error ${res.status}`);
+        err.status = res.status;
+        throw err;
+      }
+      return data;
+    }
+
+    async function load() {
+      try {
+        const data = await api("GET");
+        entries = data.entries;
+        byId("dashError").textContent = "";
+        render();
+        return true;
+      } catch (err) {
+        if (err.status === 401) { logout("Wrong password"); return false; }
+        byId("dashError").textContent = err.message;
+        return false;
+      }
+    }
+
+    function render() {
+      byId("total").textContent = `${entries.length} ${entries.length === 1 ? "person has" : "people have"} taken the quiz`;
+      const max = Math.max(1, ...QUIZ.personalities.map((p) => entries.filter((e) => e.personality === p.id).length));
+      const box = byId("teams");
+      box.innerHTML = "";
+
+      const known = new Set(QUIZ.personalities.map((p) => p.id));
+      const groups = QUIZ.personalities.map((p) => ({ ...p, members: entries.filter((e) => e.personality === p.id) }));
+      const orphans = entries.filter((e) => !known.has(e.personality));
+      if (orphans.length) groups.push({ id: "_other", name: "Old / renamed personality", team: "Other", color: "#6b7280", accessory: "none", members: orphans });
+
+      for (const g of groups) {
+        const card = document.createElement("div");
+        card.className = "team";
+        card.innerHTML = `
+          <div class="team-head" style="background:${g.color}">
+            ${drawGingerbread("#fff8ec", g.accessory)}
+            <div><div class="name"></div><div class="tname" style="opacity:.85;font-size:.9rem"></div></div>
+            <div class="count"></div>
+          </div>
+          <div class="bar"><div style="background:${g.color};width:${(g.members.length / max) * 100}%"></div></div>
+          <ul></ul>`;
+        card.querySelector(".name").textContent = g.team;
+        card.querySelector(".tname").textContent = g.name;
+        card.querySelector(".count").textContent = g.members.length;
+        const ul = card.querySelector("ul");
+        if (!g.members.length) {
+          const li = document.createElement("div");
+          li.className = "empty";
+          li.textContent = "No one yet";
+          ul.replaceWith(li);
+        }
+        for (const m of g.members) {
+          const li = document.createElement("li");
+          const n = document.createElement("span");
+          n.className = "n";
+          n.textContent = m.name;
+          const t = document.createElement("span");
+          t.className = "t";
+          t.textContent = new Date(m.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+          const del = document.createElement("button");
+          del.title = "Remove this entry";
+          del.textContent = "×";
+          del.onclick = async () => {
+            if (!confirm(`Remove ${m.name} from the results?`)) return;
+            try { await api("DELETE", "?id=" + encodeURIComponent(m.id)); load(); }
+            catch (err) { byId("dashError").textContent = err.message; }
+          };
+          li.append(n, t, del);
+          ul.appendChild(li);
+        }
+        box.appendChild(card);
+      }
+    }
+
+    function csv() {
+      const nameOf = Object.fromEntries(QUIZ.personalities.map((p) => [p.id, p]));
+      const esc = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+      const rows = [["Name", "Team", "Personality", "Time"]];
+      for (const e of entries) {
+        const p = nameOf[e.personality];
+        rows.push([e.name, p?.team ?? e.personality, p?.name ?? e.personality, new Date(e.createdAt).toLocaleString()]);
+      }
+      const blob = new Blob([rows.map((r) => r.map(esc).join(",")).join("\n")], { type: "text/csv" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "gingerbread-teams.csv";
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    function startTimer() {
+      clearInterval(timer);
+      if (byId("autoRefresh").checked) timer = setInterval(load, 10000);
+    }
+
+    function logout(msg) {
+      clearInterval(timer);
+      key = "";
+      sessionStorage.removeItem(KEY_STORE);
+      byId("dashView").hidden = true;
+      byId("loginView").hidden = false;
+      byId("loginError").textContent = msg || "";
+    }
+
+    byId("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      key = byId("pw").value;
+      if (await load()) {
+        sessionStorage.setItem(KEY_STORE, key);
+        byId("loginView").hidden = true;
+        byId("dashView").hidden = false;
+        startTimer();
+      }
+    });
+    byId("refreshBtn").onclick = load;
+    byId("csvBtn").onclick = csv;
+    byId("autoRefresh").onchange = startTimer;
+    byId("resetBtn").onclick = async () => {
+      if (!confirm("Delete ALL quiz results? This can't be undone.")) return;
+      try { await api("DELETE", "?all=1"); load(); }
+      catch (err) { byId("dashError").textContent = err.message; }
+    };
+
+    if (key) {
+      load().then((ok) => {
+        if (ok) { byId("loginView").hidden = true; byId("dashView").hidden = false; startTimer(); }
+      });
+    }
+  </script>
+</body>
+</html>
