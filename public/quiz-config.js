@@ -3,9 +3,11 @@
 //  Both the quiz page and the organiser dashboard read from here.
 //
 //  • Each personality needs a unique `id` (lowercase letters/numbers/dashes).
-//  • Each answer has a `p` that says which personality it gives a point to.
-//  • You can have any number of personalities and questions. Try to give
-//    every personality the same number of answers so teams stay even.
+//  • Each answer has `points`, saying how many points it gives to which
+//    personalities, e.g. points: { "cozy-blanket": 2, "scrapbook": 2 }.
+//    (Matches the Excel sheet: one column per personality.)
+//  • You can have any number of personalities and questions. Keep the max
+//    possible points equal for every personality so teams stay even.
 //  • `icon` options for the drawing:
 //      "blanket", "sneaker", "mystery-box", "scrapbook", "present"
 // ============================================================================
@@ -13,7 +15,7 @@
 window.QUIZ = {
   title: "What Christmas Gift Are You?",
   subtitle:
-    "Everyone brings a different gift to the group. Answer 8 quick questions to find yours and meet your team for the night.",
+    "Everyone brings a different gift to the group. Answer {count} quick questions to find yours and meet your team for the night.",
 
   personalities: [
     {
@@ -68,75 +70,114 @@ window.QUIZ = {
 
   questions: [
     {
-      q: "It's the first hour of the Christmas mixer. Where are you?",
+      q: "What's your usual café order?",
       answers: [
-        { text: "Settled into a comfy corner, deep in a chat with a few people", p: "cozy-blanket" },
-        { text: "Getting everyone hyped up for the first game", p: "fresh-kicks" },
-        { text: "Wandering around to see what's going on everywhere", p: "mystery-box" },
-        { text: "Snapping photos of the decorations and the people", p: "scrapbook" },
-      ],
-    },
-    {
-      q: "You pulled a name for Secret Santa. What do you get them?",
-      answers: [
-        { text: "Something cosy: fuzzy socks, a nice mug, their favourite snacks", p: "cozy-blanket" },
-        { text: "Something for their goals: gym gear, a planner, a good water bottle", p: "fresh-kicks" },
-        { text: "A voucher for something they've never tried before", p: "mystery-box" },
-        { text: "A handmade card with an inside joke only they'd get", p: "scrapbook" },
-      ],
-    },
-    {
-      q: "Your perfect weekend looks like…",
-      answers: [
-        { text: "Café hopping and a long catch-up with friends", p: "cozy-blanket" },
-        { text: "A morning run, then a game of futsal or badminton", p: "fresh-kicks" },
-        { text: "No plans. Pick a random MRT stop and see what happens.", p: "mystery-box" },
-        { text: "A gig, an art exhibition or a photo walk", p: "scrapbook" },
-      ],
-    },
-    {
-      q: "A friend is having a rough week. You…",
-      answers: [
-        { text: "Invite them over for comfort food and a movie", p: "cozy-blanket" },
-        { text: "Send a “you got this!” text and help them make a plan", p: "fresh-kicks" },
-        { text: "Drag them somewhere new to take their mind off it", p: "mystery-box" },
-        { text: "Write them a heartfelt note they can keep", p: "scrapbook" },
-      ],
-    },
-    {
-      q: "Group project time. You're the one…",
-      answers: [
-        { text: "Keeping the vibes good and making sure everyone feels included", p: "cozy-blanket" },
-        { text: "Setting the goals and pushing the team to hit them", p: "fresh-kicks" },
-        { text: "Throwing out bold ideas nobody else thought of", p: "mystery-box" },
-        { text: "Making the slides look amazing and telling the story", p: "scrapbook" },
-      ],
-    },
-    {
-      q: "Which present are you unwrapping first?",
-      answers: [
-        { text: "The big, soft one. It's definitely a hoodie.", p: "cozy-blanket" },
-        { text: "The shoebox. New running shoes, please!", p: "fresh-kicks" },
-        { text: "The weirdly shaped one with no label", p: "mystery-box" },
-        { text: "The small flat one that might be a polaroid camera", p: "scrapbook" },
+        { text: "Hot chocolate and whatever pastry looks freshest", points: { "cozy-blanket": 1 } },
+        { text: "Iced black coffee to fuel a full day", points: { "fresh-kicks": 1 } },
+        { text: "Whatever's new on the menu that I've never tried", points: { "mystery-box": 1 } },
+        { text: "The prettiest drink on the menu, photographed before the first sip", points: { "scrapbook": 1 } },
       ],
     },
     {
       q: "Your camera roll is mostly…",
       answers: [
-        { text: "Food. So much food.", p: "cozy-blanket" },
-        { text: "Workout progress and match-day photos", p: "fresh-kicks" },
-        { text: "Random places you can't remember the names of", p: "mystery-box" },
-        { text: "Sunsets, concerts and candid shots of friends", p: "scrapbook" },
+        { text: "Food, and blurry photos of friends laughing", points: { "cozy-blanket": 1 } },
+        { text: "Workout progress, scoreboards and screenshots of goals", points: { "fresh-kicks": 1 } },
+        { text: "Random places, weird signs and things I stumbled on", points: { "mystery-box": 1 } },
+        { text: "Sunsets, little details and carefully curated photo dumps", points: { "scrapbook": 1 } },
       ],
     },
     {
-      q: "In your friend group, you're the one who…",
+      q: "A friend texts you: \"I'm having a rough week.\" What do you do?",
       answers: [
-        { text: "Makes everyone feel at home", p: "cozy-blanket" },
-        { text: "Cheers the loudest for everyone else", p: "fresh-kicks" },
-        { text: "Always says “why not?”", p: "mystery-box" },
-        { text: "Remembers the little details about everyone", p: "scrapbook" },
+        { text: "Show up with their favourite snacks and just keep them company", points: { "cozy-blanket": 2 } },
+        { text: "Hype them up and help them figure out the next step", points: { "fresh-kicks": 2 } },
+        { text: "Invite them out for something fun to lift them up", points: { "mystery-box": 2 } },
+        { text: "Send a long heartfelt message, or a song that made you think of them", points: { "scrapbook": 2 } },
+      ],
+    },
+    {
+      q: "After a long week, what recharges you most?",
+      answers: [
+        { text: "A slow night in", points: { "cozy-blanket": 2, "scrapbook": 2 } },
+        { text: "Getting out and doing something", points: { "fresh-kicks": 2, "mystery-box": 2 } },
+      ],
+    },
+    {
+      q: "Plans got cancelled and it's pouring with rain. You…",
+      answers: [
+        { text: "Stay in with a blanket and a comfort show", points: { "cozy-blanket": 1 } },
+        { text: "Move it indoors: bouldering, badminton, anything active", points: { "fresh-kicks": 1 } },
+        { text: "Go out anyway, rain just makes it more of an adventure", points: { "mystery-box": 1 } },
+        { text: "Put on a rainy day playlist and start a creative project", points: { "scrapbook": 1 } },
+      ],
+    },
+    {
+      q: "It's game night. Which game are you reaching for?",
+      answers: [
+        { text: "Something easy like Uno, so everyone can join in", points: { "cozy-blanket": 1 } },
+        { text: "Anything competitive, I'm here to win", points: { "fresh-kicks": 1 } },
+        { text: "A game none of us have ever played", points: { "mystery-box": 1 } },
+        { text: "Something creative, like Pictionary or Dixit", points: { "scrapbook": 1 } },
+      ],
+    },
+    {
+      q: "There's a big event coming up and they need volunteers. You sign up for…",
+      answers: [
+        { text: "The welcome team, greeting people at the door", points: { "cozy-blanket": 2 } },
+        { text: "Running the games and keeping the energy up", points: { "fresh-kicks": 2 } },
+        { text: "Trying a role I've never done before, just to see what it's like", points: { "mystery-box": 2 } },
+        { text: "Photography, decor or the slideshow", points: { "scrapbook": 2 } },
+      ],
+    },
+    {
+      q: "Planning a day out with friends, you'd rather…",
+      answers: [
+        { text: "Keep it loose and see where the day takes us", points: { "cozy-blanket": 2, "mystery-box": 2 } },
+        { text: "Have a plan so we make the most of it", points: { "fresh-kicks": 2, "scrapbook": 2 } },
+      ],
+    },
+    {
+      q: "Which superpower would you pick?",
+      answers: [
+        { text: "Making anyone feel instantly at ease", points: { "cozy-blanket": 1 } },
+        { text: "Never running out of energy", points: { "fresh-kicks": 1 } },
+        { text: "Teleporting anywhere, anytime", points: { "mystery-box": 1 } },
+        { text: "Reliving any memory, perfectly", points: { "scrapbook": 1 } },
+      ],
+    },
+    {
+      q: "What souvenir do you bring home from a trip?",
+      answers: [
+        { text: "Local snacks to share with everyone back home", points: { "cozy-blanket": 1 } },
+        { text: "A shirt from the hike or race I finished there", points: { "fresh-kicks": 1 } },
+        { text: "Something random that comes with a crazy story", points: { "mystery-box": 1 } },
+        { text: "Postcards, ticket stubs and photos to keep", points: { "scrapbook": 1 } },
+      ],
+    },
+    {
+      q: "It's a close friend's birthday. What's your contribution?",
+      answers: [
+        { text: "Hosting at my place, with homemade food", points: { "cozy-blanket": 2 } },
+        { text: "Organising everything and making sure it actually happens", points: { "fresh-kicks": 2 } },
+        { text: "A surprise they'll never see coming", points: { "mystery-box": 2 } },
+        { text: "A handmade card, photo collage or video montage", points: { "scrapbook": 2 } },
+      ],
+    },
+    {
+      q: "Which would you rather be known for?",
+      answers: [
+        { text: "Being someone who helps others feel supported and encouraged", points: { "cozy-blanket": 2, "fresh-kicks": 2 } },
+        { text: "Being someone who brings new experiences and meaningful moments into people's lives", points: { "mystery-box": 2, "scrapbook": 2 } },
+      ],
+    },
+    {
+      q: "Which compliment would mean the most to you?",
+      answers: [
+        { text: "\"Being around you feels like home.\"", points: { "cozy-blanket": 2 } },
+        { text: "\"You make me want to be better.\"", points: { "fresh-kicks": 2 } },
+        { text: "\"Life is never boring with you around.\"", points: { "mystery-box": 2 } },
+        { text: "\"You notice things nobody else does.\"", points: { "scrapbook": 2 } },
       ],
     },
   ],

@@ -281,7 +281,7 @@
 
     // ---------- intro ----------
     byId("title").textContent = QUIZ.title;
-    byId("subtitle").textContent = QUIZ.subtitle;
+    byId("subtitle").textContent = QUIZ.subtitle.replace("{count}", QUIZ.questions.length);
     byId("heroCookies").innerHTML = QUIZ.personalities.map((p) => drawGift(p.icon, p.color)).join("");
     byId("ovenCookie").innerHTML = drawGift("present", "#c8283a");
 
@@ -352,8 +352,10 @@
     function computeScores() {
       const scores = Object.fromEntries(QUIZ.personalities.map((p) => [p.id, 0]));
       picks.forEach((ansIndex, qi) => {
-        const pid = QUIZ.questions[qi].answers[ansIndex]?.p;
-        if (pid in scores) scores[pid]++;
+        const a = QUIZ.questions[qi].answers[ansIndex];
+        if (!a) return;
+        const pts = a.points || (a.p ? { [a.p]: 1 } : {});
+        for (const [pid, n] of Object.entries(pts)) if (pid in scores) scores[pid] += Number(n) || 0;
       });
       return scores;
     }
