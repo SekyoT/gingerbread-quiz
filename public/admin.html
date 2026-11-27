@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex" />
-  <title>Organiser Dashboard · Christmas Gift Quiz</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎁</text></svg>" />
+  <title>Organiser Dashboard · Well Hello Project</title>
+  <link rel="icon" type="image/png" href="/well-hello-logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet" />
@@ -18,7 +18,8 @@
       padding: 24px 16px 48px;
     }
     .wrap { max-width: 1200px; margin: 0 auto; }
-    h1 { font-family: "Mountains of Christmas", cursive; color: #fff; font-size: 2.6rem; margin: 0 0 4px; }
+    h1 { font-family: "Mountains of Christmas", cursive; color: #fff; font-size: 2.6rem; margin: 0 0 4px; display: flex; align-items: center; gap: 14px; }
+    h1 img { width: 54px; height: 54px; border-radius: 14px; box-shadow: 0 0 0 3px #fff; }
     .sub { color: #cfe8dc; margin: 0 0 20px; }
     .panel { background: var(--cream); border-radius: 20px; padding: 20px; box-shadow: 0 12px 30px rgba(0,0,0,.25); }
     .login { max-width: 380px; margin: 60px auto; text-align: center; }
@@ -54,7 +55,7 @@
 </head>
 <body>
   <div class="wrap">
-    <h1>🎄 Organiser Dashboard</h1>
+    <h1><img src="/well-hello-logo.png" alt="Well Hello Project logo" /> Well Hello Project · Organiser Dashboard</h1>
     <p class="sub">See who's on which team as people finish the quiz.</p>
 
     <div id="loginView" class="panel login">

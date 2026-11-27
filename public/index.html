@@ -3,9 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>What Christmas Gift Are You?</title>
-  <meta name="description" content="Christmas mixer personality quiz: find out which gift you bring to the group, and meet your team." />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎁</text></svg>" />
+  <title>What Christmas Gift Are You? · Well Hello Project</title>
+  <meta name="description" content="A Christmas personality quiz from the Well Hello Project: find out which gift you bring to the group, and meet your team." />
+  <link rel="icon" type="image/png" href="/well-hello-logo.png" />
+  <link rel="apple-touch-icon" href="/well-hello-logo.png" />
+  <meta name="theme-color" content="#0e3b2c" />
+  <!-- Link preview when the quiz is shared on Telegram / WhatsApp / Instagram -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Well Hello Project" />
+  <meta property="og:title" content="What Christmas Gift Are You? 🎁 Well Hello Project" />
+  <meta property="og:description" content="Take our Christmas personality quiz, find your gift and meet your team for the night!" />
+  <meta property="og:image" content="https://gift-personality.vercel.app/well-hello-logo.png" />
+  <meta property="og:url" content="https://gift-personality.vercel.app/" />
+  <meta name="twitter:card" content="summary" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet" />
@@ -50,6 +60,27 @@
     @media (prefers-reduced-motion: reduce) { #snow { display: none; } }
 
     /* ---------- layout ---------- */
+    /* ---------- Well Hello Project header ---------- */
+    .brand {
+      position: relative; z-index: 1; display: flex; align-items: center; gap: 14px;
+      margin: 4px 0 14px; color: #fff; text-align: left;
+    }
+    .logo-wrap { position: relative; flex: none; width: 76px; height: 76px; }
+    .logo-wrap img {
+      width: 100%; height: 100%; display: block; border-radius: 20px;
+      box-shadow: 0 0 0 4px #fff, 0 0 0 7px var(--gold), 0 10px 24px rgba(0,0,0,.35);
+    }
+    .logo-wrap .holly { position: absolute; width: 58px; left: -22px; top: -22px; transform: rotate(-18deg); filter: drop-shadow(0 2px 3px rgba(0,0,0,.3)); }
+    .logo-wrap .twinkle { position: absolute; color: var(--gold); font-size: 16px; animation: twinkle 1.8s ease-in-out infinite; }
+    .logo-wrap .t1 { right: -14px; top: -10px; }
+    .logo-wrap .t2 { right: -18px; bottom: 4px; font-size: 11px; animation-delay: .6s; }
+    .logo-wrap .t3 { left: -12px; bottom: -8px; font-size: 12px; animation-delay: 1.2s; }
+    @keyframes twinkle { 50% { opacity: .25; transform: scale(.7) rotate(20deg); } }
+    .brand-text .presents { font-size: .78rem; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); }
+    .brand-text .name { font-family: "Mountains of Christmas", cursive; font-weight: 700; font-size: 2rem; line-height: 1; margin: 2px 0; }
+    .brand-text .event { font-size: .9rem; color: #d9efe4; font-weight: 600; }
+    @media (prefers-reduced-motion: reduce) { .logo-wrap .twinkle { animation: none; } }
+
     .bunting {
       position: relative; z-index: 1; display: flex; gap: 6px; margin-bottom: 14px;
     }
@@ -172,6 +203,27 @@
 <body>
   <div id="snow" aria-hidden="true"></div>
 
+  <header class="brand">
+    <div class="logo-wrap">
+      <img src="/well-hello-logo.png" alt="Well Hello Project logo" width="76" height="76" />
+      <svg class="holly" viewBox="0 0 120 80" aria-hidden="true">
+          <path d="M60 46 C46 30 26 28 8 34 C18 38 20 46 16 54 C26 50 34 54 38 62 C42 52 52 50 60 46 Z" fill="#1f7a45"/>
+          <path d="M60 46 C74 30 94 28 112 34 C102 38 100 46 104 54 C94 50 86 54 82 62 C78 52 68 50 60 46 Z" fill="#2a9254"/>
+          <path d="M12 38 Q36 40 58 46 M108 38 Q84 40 62 46" stroke="#155c33" stroke-width="2" fill="none"/>
+          <circle cx="52" cy="50" r="8" fill="#d42a3a"/><circle cx="68" cy="50" r="8" fill="#c8283a"/><circle cx="60" cy="40" r="8" fill="#e23b4a"/>
+          <circle cx="57" cy="37" r="2.5" fill="#fff" opacity=".7"/><circle cx="49" cy="47" r="2.2" fill="#fff" opacity=".6"/><circle cx="65" cy="47" r="2.2" fill="#fff" opacity=".6"/>
+        </svg>
+      <span class="twinkle t1" aria-hidden="true">✦</span>
+      <span class="twinkle t2" aria-hidden="true">✦</span>
+      <span class="twinkle t3" aria-hidden="true">✦</span>
+    </div>
+    <div class="brand-text">
+      <div class="presents">You're invited by</div>
+      <div class="name">Well Hello Project</div>
+      <div class="event">🎄 Christmas Mixer · Gift Quiz</div>
+    </div>
+  </header>
+
   <div class="bunting" aria-hidden="true">
     <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
   </div>
@@ -232,7 +284,7 @@
     </section>
   </main>
 
-  <footer>Merry Christmas from the mixer team 🎁</footer>
+  <footer>Merry Christmas from the Well Hello Project 🎁</footer>
 
   <script src="quiz-config.js"></script>
   <script src="gifts.js"></script>
